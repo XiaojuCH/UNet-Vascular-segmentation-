@@ -361,8 +361,8 @@ def train():
                 'val_acc': float(avg_val_acc),
                 'val_dice': float(avg_val_mdice),
                 'train_loss': float(avg_train_loss),
-                'attention_type': 'enhanced',
-                'use_attention_at': ['bottleneck', 'decoder']
+                'attention_type': attention_config['attention_type'],
+                'use_attention_at': attention_config['use_attention_at']
             }
             save_checkpoint(model, epoch, avg_val_miou, ckpt_dir, 'run_best',
                           optimizer=optimizer, meta=meta)
