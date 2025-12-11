@@ -4,3 +4,7 @@ dataset/
 *.pth
 *.png
 *.xlsx
+检查.py
+生成图片.py
+修改.py
+转格式2.py
