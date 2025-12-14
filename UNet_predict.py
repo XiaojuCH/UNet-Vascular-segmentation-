@@ -4,13 +4,13 @@ from PIL import Image
 import numpy as np
 import torchvision.transforms as T
 import cv2
-from Unet_train import UNet   # 如果你的 UNet 在 Unet_test.py 里
+from Unet_with_attention import UNet_Attention   # 如果你的 UNet 在 Unet_test.py 里
 
 # -------------------------
 # 1. 加载模型
 # -------------------------
-def load_model(model_path="save_model/checkpoints/run_best.pth", device="cuda"):
-    model = UNet(n_classes=2).to(device)
+def load_model(model_path="save_model_attention\checkpoints/run_best.pth", device="cuda"):
+    model = UNet_Attention(n_classes=2).to(device)
     # 加载检查点（包含net, epoch, optimizer等）
     checkpoint = torch.load(model_path, map_location=device, weights_only=False)
     # 只加载模型权重
@@ -60,9 +60,9 @@ def save_color_mask(mask, save_path):
 if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    model = load_model("save_model/checkpoints/run_best.pth", device)
+    model = load_model("save_model_attention\checkpoints/run_best.pth", device)
 
-    img_path = "1.png"
+    img_path = "test/256/frame_B_0_B_box1.png"
     save_path = "pred_mask.png"
 
     mask = predict_single(model, img_path, device)

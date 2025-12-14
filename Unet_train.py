@@ -114,14 +114,38 @@ class SegDataset(Dataset):
         mask = Image.open(os.path.join(self.mask_dir, name))
 
         if self.augment:
+            # 1. 随机水平翻转
             if np.random.rand() > 0.5:
                 img = TF.hflip(img)
                 mask = TF.hflip(mask)
+
+            # 2. 随机垂直翻转
             if np.random.rand() > 0.5:
                 img = TF.vflip(img)
                 mask = TF.vflip(mask)
 
+            # 3. 随机旋转 (0, 90, 180, 270度)
+            if np.random.rand() > 0.5:
+                angle = int(np.random.choice([90, 180, 270]))
+                img = TF.rotate(img, angle)
+                mask = TF.rotate(mask, angle)
+
+            # 4. 随机小角度旋转 (-15到15度)
+            if np.random.rand() > 0.7:
+                angle = np.random.uniform(-15, 15)
+                img = TF.rotate(img, angle)
+                mask = TF.rotate(mask, angle)
+
+        # 转换为tensor
         img = T.ToTensor()(img)
+
+        # 图像增强（只对图像，不对mask）
+        if self.augment:
+            # 6. 随机亮度调整 (模拟不同光照条件)
+            if np.random.rand() > 0.5:
+                brightness_factor = np.random.uniform(0.7, 1.3)
+                img = TF.adjust_brightness(img, brightness_factor)
+
         mask = torch.tensor(np.array(mask) // 255, dtype=torch.long)
 
         return img, mask
@@ -165,21 +189,21 @@ def train():
     # 创建数据加载器
     train_loader = DataLoader(
         train_dataset,
-        batch_size=8,
+        batch_size=4,
         shuffle=True,
         num_workers=0
     )
 
     val_loader = DataLoader(
         val_dataset_clean,
-        batch_size=8,
+        batch_size=4,
         shuffle=False,
         num_workers=0
     )
 
     test_loader = DataLoader(
         test_dataset_clean,
-        batch_size=8,
+        batch_size=4,
         shuffle=False,
         num_workers=0
     )
@@ -333,7 +357,7 @@ def train():
     print("\n===== 加载最佳模型 (run_best) =====")
     best_ckpt_path = os.path.join(ckpt_dir, 'run_best.pth')
     if os.path.exists(best_ckpt_path):
-        ckpt = torch.load(best_ckpt_path, map_location=device,weights_only=True)
+        ckpt = torch.load(best_ckpt_path, map_location=device, weights_only=False)
         model.load_state_dict(ckpt['net'])
         best_epoch = ckpt['epoch']
         best_miou = ckpt['val_miou']

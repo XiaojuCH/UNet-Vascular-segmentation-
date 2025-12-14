@@ -45,7 +45,7 @@ ATTENTION_CONFIGS = {
 #   当前使用的配置
 # =========================
 # 修改这里来切换配置方案
-CURRENT_CONFIG = 'balanced'  # 可选: 'lightweight', 'balanced', 'performance', 'maximum'
+CURRENT_CONFIG = 'lightweight'  # 可选: 'lightweight', 'balanced', 'performance', 'maximum'
 
 # =========================
 #   获取配置函数
