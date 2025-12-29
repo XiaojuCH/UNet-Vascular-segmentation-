@@ -1,0 +1,93 @@
+[2025-12-28 17:05:22] Namespace(base_lr=0.0001, batch_size=4, deterministic=1, early_stop_patience=15, img_dir='../dataset/image', img_size=256, mask_dir='../dataset/mask', max_epochs=50, model_arch='transunet', n_gpu=1, n_skip=3, num_classes=2, save_dir='../save_model_Transunet_SCSA', seed=42, train_ratio=0.7, val_ratio=0.15, vit_name='R50-ViT-B_16', vit_patches_size=16, warmup_epochs=5)
+[2025-12-28 17:05:22] Using device: cuda
+[2025-12-28 17:05:22] ======================================================================
+[2025-12-28 17:05:22] 加载数据集...
+[2025-12-28 17:05:22] 数据集划分:
+[2025-12-28 17:05:22]   - 训练集: 433 (70.0%)
+[2025-12-28 17:05:22]   - 验证集: 92 (14.9%)
+[2025-12-28 17:05:22]   - 测试集: 94 (15.2%)
+[2025-12-28 17:05:22] ======================================================================
+[2025-12-28 17:05:22] 初始化 TransUNet (with SCSA if configured) 模型...
+[2025-12-28 17:05:23] 加载预训练权重: imagenet21k_R50+ViT-B_16.npz
+[2025-12-28 17:05:23] load_pretrained: resized variant: torch.Size([1, 197, 768]) to torch.Size([1, 256, 768])
+[2025-12-28 17:05:24] ======================================================================
+[2025-12-28 17:05:24] 开始训练 transunet...
+[2025-12-28 17:05:49] [Epoch 1/50] Val mIoU: 0.7751 Val Dice: 0.8597 Val HD95: 22.9297 Val Acc: 0.9455 | Train Loss: 0.224518 | Time: 25.48s ETA: 0:20:48
+[2025-12-28 17:05:50] >>> New run-best at epoch 1, Val mIoU=0.7751 Val Dice=0.8597 Val HD95=22.9297
+[2025-12-28 17:06:15] [Epoch 2/50] Val mIoU: 0.7981 Val Dice: 0.8775 Val HD95: 10.7925 Val Acc: 0.9600 | Train Loss: 0.116456 | Time: 24.57s ETA: 0:20:01
+[2025-12-28 17:06:16] >>> New run-best at epoch 2, Val mIoU=0.7981 Val Dice=0.8775 Val HD95=10.7925
+[2025-12-28 17:06:41] [Epoch 3/50] Val mIoU: 0.7947 Val Dice: 0.8749 Val HD95: 11.9529 Val Acc: 0.9587 | Train Loss: 0.103537 | Time: 25.28s ETA: 0:19:40
+[2025-12-28 17:07:06] [Epoch 4/50] Val mIoU: 0.8053 Val Dice: 0.8830 Val HD95: 11.7160 Val Acc: 0.9571 | Train Loss: 0.093316 | Time: 25.02s ETA: 0:19:13
+[2025-12-28 17:07:07] >>> New run-best at epoch 4, Val mIoU=0.8053 Val Dice=0.8830 Val HD95=11.7160
+[2025-12-28 17:07:32] [Epoch 5/50] Val mIoU: 0.7589 Val Dice: 0.8452 Val HD95: 18.7309 Val Acc: 0.9545 | Train Loss: 0.089074 | Time: 25.14s ETA: 0:18:49
+[2025-12-28 17:07:58] [Epoch 6/50] Val mIoU: 0.8173 Val Dice: 0.8915 Val HD95: 9.0628 Val Acc: 0.9606 | Train Loss: 0.085937 | Time: 25.39s ETA: 0:18:26
+[2025-12-28 17:07:59] >>> New run-best at epoch 6, Val mIoU=0.8173 Val Dice=0.8915 Val HD95=9.0628
+[2025-12-28 17:08:24] [Epoch 7/50] Val mIoU: 0.7976 Val Dice: 0.8767 Val HD95: 10.9948 Val Acc: 0.9606 | Train Loss: 0.085886 | Time: 25.15s ETA: 0:18:01
+[2025-12-28 17:08:49] [Epoch 8/50] Val mIoU: 0.8105 Val Dice: 0.8866 Val HD95: 11.3806 Val Acc: 0.9606 | Train Loss: 0.083951 | Time: 25.15s ETA: 0:17:36
+[2025-12-28 17:09:14] [Epoch 9/50] Val mIoU: 0.8079 Val Dice: 0.8842 Val HD95: 15.9192 Val Acc: 0.9597 | Train Loss: 0.082461 | Time: 25.17s ETA: 0:17:11
+[2025-12-28 17:09:39] [Epoch 10/50] Val mIoU: 0.8093 Val Dice: 0.8857 Val HD95: 9.7376 Val Acc: 0.9625 | Train Loss: 0.081797 | Time: 25.24s ETA: 0:16:46
+[2025-12-28 17:10:05] [Epoch 11/50] Val mIoU: 0.8012 Val Dice: 0.8794 Val HD95: 9.8940 Val Acc: 0.9620 | Train Loss: 0.079758 | Time: 25.16s ETA: 0:16:21
+[2025-12-28 17:10:30] [Epoch 12/50] Val mIoU: 0.7973 Val Dice: 0.8762 Val HD95: 14.0969 Val Acc: 0.9600 | Train Loss: 0.080528 | Time: 25.17s ETA: 0:15:56
+[2025-12-28 17:10:55] [Epoch 13/50] Val mIoU: 0.8075 Val Dice: 0.8843 Val HD95: 13.4346 Val Acc: 0.9614 | Train Loss: 0.079963 | Time: 25.21s ETA: 0:15:31
+[2025-12-28 17:11:20] [Epoch 14/50] Val mIoU: 0.8215 Val Dice: 0.8941 Val HD95: 12.6299 Val Acc: 0.9633 | Train Loss: 0.077567 | Time: 25.28s ETA: 0:15:06
+[2025-12-28 17:11:21] >>> New run-best at epoch 14, Val mIoU=0.8215 Val Dice=0.8941 Val HD95=12.6299
+[2025-12-28 17:11:46] [Epoch 15/50] Val mIoU: 0.8202 Val Dice: 0.8935 Val HD95: 10.8247 Val Acc: 0.9622 | Train Loss: 0.079084 | Time: 25.18s ETA: 0:14:41
+[2025-12-28 17:12:12] [Epoch 16/50] Val mIoU: 0.8145 Val Dice: 0.8891 Val HD95: 10.3257 Val Acc: 0.9635 | Train Loss: 0.077637 | Time: 25.19s ETA: 0:14:15
+[2025-12-28 17:12:37] [Epoch 17/50] Val mIoU: 0.8174 Val Dice: 0.8913 Val HD95: 10.1255 Val Acc: 0.9634 | Train Loss: 0.076654 | Time: 25.18s ETA: 0:13:50
+[2025-12-28 17:13:02] [Epoch 18/50] Val mIoU: 0.8038 Val Dice: 0.8812 Val HD95: 15.6121 Val Acc: 0.9599 | Train Loss: 0.076676 | Time: 25.22s ETA: 0:13:25
+[2025-12-28 17:13:27] [Epoch 19/50] Val mIoU: 0.8254 Val Dice: 0.8970 Val HD95: 9.0255 Val Acc: 0.9644 | Train Loss: 0.076757 | Time: 25.17s ETA: 0:13:00
+[2025-12-28 17:13:28] >>> New run-best at epoch 19, Val mIoU=0.8254 Val Dice=0.8970 Val HD95=9.0255
+[2025-12-28 17:13:53] [Epoch 20/50] Val mIoU: 0.8148 Val Dice: 0.8901 Val HD95: 9.0163 Val Acc: 0.9593 | Train Loss: 0.074624 | Time: 24.91s ETA: 0:12:34
+[2025-12-28 17:14:22] [Epoch 21/50] Val mIoU: 0.8225 Val Dice: 0.8952 Val HD95: 10.7000 Val Acc: 0.9632 | Train Loss: 0.075454 | Time: 28.62s ETA: 0:12:14
+[2025-12-28 17:14:52] [Epoch 22/50] Val mIoU: 0.8190 Val Dice: 0.8922 Val HD95: 8.8315 Val Acc: 0.9640 | Train Loss: 0.074707 | Time: 30.33s ETA: 0:11:55
+[2025-12-28 17:15:23] [Epoch 23/50] Val mIoU: 0.8231 Val Dice: 0.8954 Val HD95: 8.3128 Val Acc: 0.9641 | Train Loss: 0.074178 | Time: 30.66s ETA: 0:11:35
+[2025-12-28 17:15:54] [Epoch 24/50] Val mIoU: 0.8123 Val Dice: 0.8875 Val HD95: 13.7302 Val Acc: 0.9589 | Train Loss: 0.074764 | Time: 30.69s ETA: 0:11:15
+[2025-12-28 17:16:24] [Epoch 25/50] Val mIoU: 0.8192 Val Dice: 0.8927 Val HD95: 11.9483 Val Acc: 0.9624 | Train Loss: 0.074427 | Time: 30.09s ETA: 0:10:53
+[2025-12-28 17:16:54] [Epoch 26/50] Val mIoU: 0.8213 Val Dice: 0.8939 Val HD95: 8.6079 Val Acc: 0.9642 | Train Loss: 0.073483 | Time: 30.52s ETA: 0:10:31
+[2025-12-28 17:17:24] [Epoch 27/50] Val mIoU: 0.8246 Val Dice: 0.8964 Val HD95: 8.5315 Val Acc: 0.9644 | Train Loss: 0.071442 | Time: 29.95s ETA: 0:10:08
+[2025-12-28 17:17:55] [Epoch 28/50] Val mIoU: 0.8274 Val Dice: 0.8985 Val HD95: 7.7289 Val Acc: 0.9639 | Train Loss: 0.072984 | Time: 30.38s ETA: 0:09:44
+[2025-12-28 17:17:56] >>> New run-best at epoch 28, Val mIoU=0.8274 Val Dice=0.8985 Val HD95=7.7289
+[2025-12-28 17:18:22] [Epoch 29/50] Val mIoU: 0.8264 Val Dice: 0.8976 Val HD95: 9.2592 Val Acc: 0.9645 | Train Loss: 0.071920 | Time: 25.46s ETA: 0:09:17
+[2025-12-28 17:18:46] [Epoch 30/50] Val mIoU: 0.8194 Val Dice: 0.8927 Val HD95: 11.0689 Val Acc: 0.9646 | Train Loss: 0.070153 | Time: 24.42s ETA: 0:08:49
+[2025-12-28 17:19:12] [Epoch 31/50] Val mIoU: 0.8239 Val Dice: 0.8962 Val HD95: 10.3526 Val Acc: 0.9632 | Train Loss: 0.069909 | Time: 25.49s ETA: 0:08:22
+[2025-12-28 17:19:37] [Epoch 32/50] Val mIoU: 0.8240 Val Dice: 0.8959 Val HD95: 8.2149 Val Acc: 0.9650 | Train Loss: 0.068910 | Time: 25.36s ETA: 0:07:55
+[2025-12-28 17:20:03] [Epoch 33/50] Val mIoU: 0.8268 Val Dice: 0.8979 Val HD95: 10.4606 Val Acc: 0.9647 | Train Loss: 0.068031 | Time: 25.75s ETA: 0:07:28
+[2025-12-28 17:20:29] [Epoch 34/50] Val mIoU: 0.8253 Val Dice: 0.8969 Val HD95: 9.4961 Val Acc: 0.9650 | Train Loss: 0.068604 | Time: 26.46s ETA: 0:07:02
+[2025-12-28 17:20:54] [Epoch 35/50] Val mIoU: 0.8267 Val Dice: 0.8978 Val HD95: 8.4321 Val Acc: 0.9652 | Train Loss: 0.068061 | Time: 24.87s ETA: 0:06:35
+[2025-12-28 17:21:18] [Epoch 36/50] Val mIoU: 0.8255 Val Dice: 0.8970 Val HD95: 8.1927 Val Acc: 0.9656 | Train Loss: 0.066685 | Time: 24.32s ETA: 0:06:08
+[2025-12-28 17:21:43] [Epoch 37/50] Val mIoU: 0.8286 Val Dice: 0.8995 Val HD95: 8.2241 Val Acc: 0.9644 | Train Loss: 0.066021 | Time: 24.27s ETA: 0:05:41
+[2025-12-28 17:21:44] >>> New run-best at epoch 37, Val mIoU=0.8286 Val Dice=0.8995 Val HD95=8.2241
+[2025-12-28 17:22:08] [Epoch 38/50] Val mIoU: 0.8237 Val Dice: 0.8957 Val HD95: 9.0788 Val Acc: 0.9650 | Train Loss: 0.065784 | Time: 24.38s ETA: 0:05:14
+[2025-12-28 17:22:32] [Epoch 39/50] Val mIoU: 0.8267 Val Dice: 0.8980 Val HD95: 9.6450 Val Acc: 0.9651 | Train Loss: 0.065417 | Time: 24.35s ETA: 0:04:47
+[2025-12-28 17:22:57] [Epoch 40/50] Val mIoU: 0.8282 Val Dice: 0.8991 Val HD95: 7.9216 Val Acc: 0.9652 | Train Loss: 0.064733 | Time: 24.60s ETA: 0:04:21
+[2025-12-28 17:23:27] [Epoch 41/50] Val mIoU: 0.8312 Val Dice: 0.9013 Val HD95: 7.4847 Val Acc: 0.9656 | Train Loss: 0.064115 | Time: 30.04s ETA: 0:03:55
+[2025-12-28 17:23:29] >>> New run-best at epoch 41, Val mIoU=0.8312 Val Dice=0.9013 Val HD95=7.4847
+[2025-12-28 17:23:59] [Epoch 42/50] Val mIoU: 0.8301 Val Dice: 0.9004 Val HD95: 7.0814 Val Acc: 0.9657 | Train Loss: 0.064485 | Time: 30.12s ETA: 0:03:30
+[2025-12-28 17:24:29] [Epoch 43/50] Val mIoU: 0.8306 Val Dice: 0.9008 Val HD95: 7.0301 Val Acc: 0.9653 | Train Loss: 0.063867 | Time: 29.79s ETA: 0:03:04
+[2025-12-28 17:24:59] [Epoch 44/50] Val mIoU: 0.8312 Val Dice: 0.9013 Val HD95: 6.9777 Val Acc: 0.9656 | Train Loss: 0.062692 | Time: 30.08s ETA: 0:02:38
+[2025-12-28 17:25:29] [Epoch 45/50] Val mIoU: 0.8285 Val Dice: 0.8993 Val HD95: 7.2746 Val Acc: 0.9656 | Train Loss: 0.063351 | Time: 29.93s ETA: 0:02:12
+[2025-12-28 17:25:59] [Epoch 46/50] Val mIoU: 0.8289 Val Dice: 0.8996 Val HD95: 7.4375 Val Acc: 0.9657 | Train Loss: 0.062172 | Time: 30.23s ETA: 0:01:46
+[2025-12-28 17:26:29] [Epoch 47/50] Val mIoU: 0.8291 Val Dice: 0.8997 Val HD95: 7.3976 Val Acc: 0.9655 | Train Loss: 0.062292 | Time: 30.28s ETA: 0:01:20
+[2025-12-28 17:26:59] [Epoch 48/50] Val mIoU: 0.8298 Val Dice: 0.9002 Val HD95: 7.3247 Val Acc: 0.9655 | Train Loss: 0.062134 | Time: 29.26s ETA: 0:00:53
+[2025-12-28 17:27:24] [Epoch 49/50] Val mIoU: 0.8301 Val Dice: 0.9004 Val HD95: 7.3514 Val Acc: 0.9658 | Train Loss: 0.062305 | Time: 25.03s ETA: 0:00:26
+[2025-12-28 17:27:49] [Epoch 50/50] Val mIoU: 0.8301 Val Dice: 0.9005 Val HD95: 7.2242 Val Acc: 0.9652 | Train Loss: 0.061496 | Time: 25.82s ETA: 0:00:00
+[2025-12-28 17:27:49] 
+======================================================================
+[2025-12-28 17:27:49] 训练完成！
+[2025-12-28 17:27:49] 
+加载最佳模型: ../save_model_Transunet_SCSA\checkpoints\run_best.pth
+[2025-12-28 17:27:50] 最佳模型来自 Epoch 41, Val mIoU: 0.8312
+[2025-12-28 17:27:50] 
+======================================================================
+[2025-12-28 17:27:50] 测试集评估 (使用最佳模型)
+[2025-12-28 17:27:52] 
+测试集结果:
+[2025-12-28 17:27:52]   - Loss: 0.083321
+[2025-12-28 17:27:52]   - Pixel Acc: 0.9646
+[2025-12-28 17:27:52]   - mIoU: 0.8217
+[2025-12-28 17:27:52]   - Dice: 0.8941
+[2025-12-28 17:27:52]   - HD95: 9.0742
+[2025-12-28 17:27:52] 
+模型已保存:
+[2025-12-28 17:27:52]   - 最佳模型: ../save_model_Transunet_SCSA\checkpoints\run_best.pth
+[2025-12-28 17:27:52]   - 最终模型: ../save_model_Transunet_SCSA\transunet_final.pth

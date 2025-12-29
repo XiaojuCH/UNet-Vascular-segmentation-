@@ -1,0 +1,126 @@
+[2025-12-28 14:58:28] Namespace(base_lr=0.0001, batch_size=4, deterministic=1, early_stop_patience=15, img_dir='../dataset/image', img_size=256, mask_dir='../dataset/mask', max_epochs=50, n_gpu=1, n_skip=3, num_classes=2, save_dir='../save_model_unetplusplus', seed=42, train_ratio=0.7, val_ratio=0.15, vit_name='R50-ViT-B_16', vit_patches_size=16, warmup_epochs=5)
+[2025-12-28 14:58:28] Using device: cuda
+[2025-12-28 14:58:28] ======================================================================
+[2025-12-28 14:58:28] 加载数据集...
+[2025-12-28 14:58:28] 数据集划分:
+[2025-12-28 14:58:28]   - 训练集: 433 (70.0%)
+[2025-12-28 14:58:28]   - 验证集: 92 (14.9%)
+[2025-12-28 14:58:28]   - 测试集: 94 (15.2%)
+[2025-12-28 14:58:28] ======================================================================
+[2025-12-28 14:58:28] 初始化UNet++模型...
+[2025-12-28 14:58:29] ======================================================================
+[2025-12-28 14:58:29] 开始训练...
+[2025-12-28 15:09:38] Namespace(base_lr=0.0001, batch_size=4, deterministic=1, early_stop_patience=15, img_dir='../dataset/image', img_size=256, mask_dir='../dataset/mask', max_epochs=50, n_gpu=1, n_skip=3, num_classes=2, save_dir='../save_model_unetplusplus', seed=42, train_ratio=0.7, val_ratio=0.15, vit_name='R50-ViT-B_16', vit_patches_size=16, warmup_epochs=5)
+[2025-12-28 15:09:38] Using device: cuda
+[2025-12-28 15:09:38] ======================================================================
+[2025-12-28 15:09:38] 加载数据集...
+[2025-12-28 15:09:38] 数据集划分:
+[2025-12-28 15:09:38]   - 训练集: 433 (70.0%)
+[2025-12-28 15:09:38]   - 验证集: 92 (14.9%)
+[2025-12-28 15:09:38]   - 测试集: 94 (15.2%)
+[2025-12-28 15:09:38] ======================================================================
+[2025-12-28 15:09:38] 初始化UNet++模型...
+[2025-12-28 15:09:38] ======================================================================
+[2025-12-28 15:09:38] 开始训练...
+[2025-12-28 15:13:35] Namespace(base_lr=0.0001, batch_size=4, deterministic=1, early_stop_patience=15, img_dir='../dataset/image', img_size=256, mask_dir='../dataset/mask', max_epochs=50, n_gpu=1, n_skip=3, num_classes=2, save_dir='../save_model_unetplusplus', seed=42, train_ratio=0.7, val_ratio=0.15, vit_name='R50-ViT-B_16', vit_patches_size=16, warmup_epochs=5)
+[2025-12-28 15:13:35] Using device: cuda
+[2025-12-28 15:13:35] ======================================================================
+[2025-12-28 15:13:35] 加载数据集...
+[2025-12-28 15:13:35] 数据集划分:
+[2025-12-28 15:13:35]   - 训练集: 433 (70.0%)
+[2025-12-28 15:13:35]   - 验证集: 92 (14.9%)
+[2025-12-28 15:13:35]   - 测试集: 94 (15.2%)
+[2025-12-28 15:13:35] ======================================================================
+[2025-12-28 15:13:35] 初始化UNet++模型...
+[2025-12-28 15:13:35] ======================================================================
+[2025-12-28 15:13:35] 开始训练...
+[2025-12-28 15:13:56] [Epoch 1/50] Val mIoU: 0.7300 Val Dice: 0.8229 Val HD95: 32.8348 Val Acc: 0.9287 | Train Loss: 0.444589 | Time: 20.52s ETA: 0:16:45
+[2025-12-28 15:13:56] >>> New run-best at epoch 1, Val mIoU=0.7300 Val Dice=0.8229 Val HD95=32.8348
+[2025-12-28 15:14:18] [Epoch 2/50] Val mIoU: 0.7454 Val Dice: 0.8343 Val HD95: 23.7750 Val Acc: 0.9317 | Train Loss: 0.328257 | Time: 22.21s ETA: 0:17:05
+[2025-12-28 15:14:19] >>> New run-best at epoch 2, Val mIoU=0.7454 Val Dice=0.8343 Val HD95=23.7750
+[2025-12-28 15:14:42] [Epoch 3/50] Val mIoU: 0.7650 Val Dice: 0.8489 Val HD95: 20.6947 Val Acc: 0.9517 | Train Loss: 0.274248 | Time: 23.10s ETA: 0:17:11
+[2025-12-28 15:14:42] >>> New run-best at epoch 3, Val mIoU=0.7650 Val Dice=0.8489 Val HD95=20.6947
+[2025-12-28 15:15:05] [Epoch 4/50] Val mIoU: 0.7764 Val Dice: 0.8604 Val HD95: 19.3896 Val Acc: 0.9498 | Train Loss: 0.236331 | Time: 23.01s ETA: 0:17:01
+[2025-12-28 15:15:05] >>> New run-best at epoch 4, Val mIoU=0.7764 Val Dice=0.8604 Val HD95=19.3896
+[2025-12-28 15:15:28] [Epoch 5/50] Val mIoU: 0.7881 Val Dice: 0.8681 Val HD95: 14.3842 Val Acc: 0.9553 | Train Loss: 0.205166 | Time: 22.97s ETA: 0:16:46
+[2025-12-28 15:15:28] >>> New run-best at epoch 5, Val mIoU=0.7881 Val Dice=0.8681 Val HD95=14.3842
+[2025-12-28 15:15:51] [Epoch 6/50] Val mIoU: 0.7882 Val Dice: 0.8694 Val HD95: 19.3029 Val Acc: 0.9514 | Train Loss: 0.180613 | Time: 23.03s ETA: 0:16:28
+[2025-12-28 15:15:51] >>> New run-best at epoch 6, Val mIoU=0.7882 Val Dice=0.8694 Val HD95=19.3029
+[2025-12-28 15:16:14] [Epoch 7/50] Val mIoU: 0.7919 Val Dice: 0.8714 Val HD95: 14.8851 Val Acc: 0.9516 | Train Loss: 0.161008 | Time: 22.62s ETA: 0:16:07
+[2025-12-28 15:16:14] >>> New run-best at epoch 7, Val mIoU=0.7919 Val Dice=0.8714 Val HD95=14.8851
+[2025-12-28 15:16:37] [Epoch 8/50] Val mIoU: 0.7892 Val Dice: 0.8701 Val HD95: 19.6068 Val Acc: 0.9548 | Train Loss: 0.146621 | Time: 22.66s ETA: 0:15:45
+[2025-12-28 15:17:00] [Epoch 9/50] Val mIoU: 0.7982 Val Dice: 0.8763 Val HD95: 15.0378 Val Acc: 0.9584 | Train Loss: 0.135822 | Time: 22.67s ETA: 0:15:23
+[2025-12-28 15:17:00] >>> New run-best at epoch 9, Val mIoU=0.7982 Val Dice=0.8763 Val HD95=15.0378
+[2025-12-28 15:17:23] [Epoch 10/50] Val mIoU: 0.8091 Val Dice: 0.8853 Val HD95: 11.9417 Val Acc: 0.9608 | Train Loss: 0.128021 | Time: 22.74s ETA: 0:15:02
+[2025-12-28 15:17:23] >>> New run-best at epoch 10, Val mIoU=0.8091 Val Dice=0.8853 Val HD95=11.9417
+[2025-12-28 15:17:45] [Epoch 11/50] Val mIoU: 0.8024 Val Dice: 0.8796 Val HD95: 18.3457 Val Acc: 0.9606 | Train Loss: 0.121093 | Time: 22.59s ETA: 0:14:39
+[2025-12-28 15:18:08] [Epoch 12/50] Val mIoU: 0.8040 Val Dice: 0.8815 Val HD95: 15.7536 Val Acc: 0.9597 | Train Loss: 0.114576 | Time: 22.68s ETA: 0:14:17
+[2025-12-28 15:18:30] [Epoch 13/50] Val mIoU: 0.8103 Val Dice: 0.8862 Val HD95: 10.9117 Val Acc: 0.9611 | Train Loss: 0.111462 | Time: 22.09s ETA: 0:13:53
+[2025-12-28 15:18:30] >>> New run-best at epoch 13, Val mIoU=0.8103 Val Dice=0.8862 Val HD95=10.9117
+[2025-12-28 15:18:51] [Epoch 14/50] Val mIoU: 0.8078 Val Dice: 0.8842 Val HD95: 10.7515 Val Acc: 0.9611 | Train Loss: 0.106947 | Time: 20.86s ETA: 0:13:26
+[2025-12-28 15:19:13] [Epoch 15/50] Val mIoU: 0.8109 Val Dice: 0.8867 Val HD95: 11.8823 Val Acc: 0.9616 | Train Loss: 0.103834 | Time: 22.36s ETA: 0:13:04
+[2025-12-28 15:19:14] >>> New run-best at epoch 15, Val mIoU=0.8109 Val Dice=0.8867 Val HD95=11.8823
+[2025-12-28 15:19:36] [Epoch 16/50] Val mIoU: 0.8133 Val Dice: 0.8883 Val HD95: 11.1204 Val Acc: 0.9612 | Train Loss: 0.100637 | Time: 21.88s ETA: 0:12:40
+[2025-12-28 15:19:36] >>> New run-best at epoch 16, Val mIoU=0.8133 Val Dice=0.8883 Val HD95=11.1204
+[2025-12-28 15:19:56] [Epoch 17/50] Val mIoU: 0.7864 Val Dice: 0.8659 Val HD95: 16.7010 Val Acc: 0.9585 | Train Loss: 0.098296 | Time: 20.70s ETA: 0:12:15
+[2025-12-28 15:20:17] [Epoch 18/50] Val mIoU: 0.8119 Val Dice: 0.8873 Val HD95: 10.0403 Val Acc: 0.9615 | Train Loss: 0.098448 | Time: 20.63s ETA: 0:11:49
+[2025-12-28 15:20:37] [Epoch 19/50] Val mIoU: 0.8154 Val Dice: 0.8899 Val HD95: 10.0722 Val Acc: 0.9629 | Train Loss: 0.094467 | Time: 20.36s ETA: 0:11:24
+[2025-12-28 15:20:37] >>> New run-best at epoch 19, Val mIoU=0.8154 Val Dice=0.8899 Val HD95=10.0722
+[2025-12-28 15:20:58] [Epoch 20/50] Val mIoU: 0.8071 Val Dice: 0.8833 Val HD95: 12.0235 Val Acc: 0.9618 | Train Loss: 0.094749 | Time: 20.36s ETA: 0:11:00
+[2025-12-28 15:21:18] [Epoch 21/50] Val mIoU: 0.8186 Val Dice: 0.8920 Val HD95: 11.6244 Val Acc: 0.9630 | Train Loss: 0.091347 | Time: 20.37s ETA: 0:10:35
+[2025-12-28 15:21:18] >>> New run-best at epoch 21, Val mIoU=0.8186 Val Dice=0.8920 Val HD95=11.6244
+[2025-12-28 15:21:39] [Epoch 22/50] Val mIoU: 0.8066 Val Dice: 0.8830 Val HD95: 12.9784 Val Acc: 0.9610 | Train Loss: 0.091217 | Time: 20.68s ETA: 0:10:12
+[2025-12-28 15:21:59] [Epoch 23/50] Val mIoU: 0.8104 Val Dice: 0.8861 Val HD95: 9.7887 Val Acc: 0.9618 | Train Loss: 0.089577 | Time: 20.39s ETA: 0:09:48
+[2025-12-28 15:22:23] [Epoch 24/50] Val mIoU: 0.8082 Val Dice: 0.8842 Val HD95: 11.8466 Val Acc: 0.9612 | Train Loss: 0.089805 | Time: 23.12s ETA: 0:09:28
+[2025-12-28 15:22:46] [Epoch 25/50] Val mIoU: 0.8188 Val Dice: 0.8924 Val HD95: 9.1301 Val Acc: 0.9635 | Train Loss: 0.087710 | Time: 23.41s ETA: 0:09:08
+[2025-12-28 15:22:46] >>> New run-best at epoch 25, Val mIoU=0.8188 Val Dice=0.8924 Val HD95=9.1301
+[2025-12-28 15:23:10] [Epoch 26/50] Val mIoU: 0.8193 Val Dice: 0.8928 Val HD95: 10.6254 Val Acc: 0.9622 | Train Loss: 0.086648 | Time: 23.33s ETA: 0:08:47
+[2025-12-28 15:23:10] >>> New run-best at epoch 26, Val mIoU=0.8193 Val Dice=0.8928 Val HD95=10.6254
+[2025-12-28 15:23:33] [Epoch 27/50] Val mIoU: 0.8204 Val Dice: 0.8934 Val HD95: 10.2142 Val Acc: 0.9638 | Train Loss: 0.086170 | Time: 23.43s ETA: 0:08:26
+[2025-12-28 15:23:33] >>> New run-best at epoch 27, Val mIoU=0.8204 Val Dice=0.8934 Val HD95=10.2142
+[2025-12-28 15:23:57] [Epoch 28/50] Val mIoU: 0.8184 Val Dice: 0.8921 Val HD95: 10.6465 Val Acc: 0.9636 | Train Loss: 0.085653 | Time: 23.37s ETA: 0:08:05
+[2025-12-28 15:24:20] [Epoch 29/50] Val mIoU: 0.8236 Val Dice: 0.8957 Val HD95: 9.7875 Val Acc: 0.9642 | Train Loss: 0.085071 | Time: 23.47s ETA: 0:07:44
+[2025-12-28 15:24:20] >>> New run-best at epoch 29, Val mIoU=0.8236 Val Dice=0.8957 Val HD95=9.7875
+[2025-12-28 15:24:44] [Epoch 30/50] Val mIoU: 0.8197 Val Dice: 0.8930 Val HD95: 10.2713 Val Acc: 0.9632 | Train Loss: 0.085040 | Time: 23.44s ETA: 0:07:23
+[2025-12-28 15:25:07] [Epoch 31/50] Val mIoU: 0.8233 Val Dice: 0.8955 Val HD95: 9.1007 Val Acc: 0.9637 | Train Loss: 0.083667 | Time: 23.36s ETA: 0:07:01
+[2025-12-28 15:25:31] [Epoch 32/50] Val mIoU: 0.8154 Val Dice: 0.8896 Val HD95: 11.4875 Val Acc: 0.9632 | Train Loss: 0.081168 | Time: 23.30s ETA: 0:06:40
+[2025-12-28 15:25:52] [Epoch 33/50] Val mIoU: 0.8156 Val Dice: 0.8897 Val HD95: 13.5557 Val Acc: 0.9634 | Train Loss: 0.082139 | Time: 21.59s ETA: 0:06:17
+[2025-12-28 15:26:13] [Epoch 34/50] Val mIoU: 0.8195 Val Dice: 0.8927 Val HD95: 10.5415 Val Acc: 0.9637 | Train Loss: 0.080560 | Time: 20.90s ETA: 0:05:54
+[2025-12-28 15:26:34] [Epoch 35/50] Val mIoU: 0.8192 Val Dice: 0.8922 Val HD95: 11.7357 Val Acc: 0.9631 | Train Loss: 0.081946 | Time: 20.91s ETA: 0:05:32
+[2025-12-28 15:26:55] [Epoch 36/50] Val mIoU: 0.8218 Val Dice: 0.8945 Val HD95: 8.7766 Val Acc: 0.9638 | Train Loss: 0.080518 | Time: 20.89s ETA: 0:05:09
+[2025-12-28 15:27:16] [Epoch 37/50] Val mIoU: 0.8227 Val Dice: 0.8947 Val HD95: 9.4105 Val Acc: 0.9641 | Train Loss: 0.080339 | Time: 20.83s ETA: 0:04:46
+[2025-12-28 15:27:36] [Epoch 38/50] Val mIoU: 0.8193 Val Dice: 0.8924 Val HD95: 10.0660 Val Acc: 0.9639 | Train Loss: 0.079210 | Time: 20.55s ETA: 0:04:24
+[2025-12-28 15:27:57] [Epoch 39/50] Val mIoU: 0.8243 Val Dice: 0.8960 Val HD95: 9.4040 Val Acc: 0.9645 | Train Loss: 0.079468 | Time: 20.29s ETA: 0:04:01
+[2025-12-28 15:27:57] >>> New run-best at epoch 39, Val mIoU=0.8243 Val Dice=0.8960 Val HD95=9.4040
+[2025-12-28 15:28:17] [Epoch 40/50] Val mIoU: 0.8249 Val Dice: 0.8964 Val HD95: 9.1562 Val Acc: 0.9643 | Train Loss: 0.078726 | Time: 20.28s ETA: 0:03:39
+[2025-12-28 15:28:17] >>> New run-best at epoch 40, Val mIoU=0.8249 Val Dice=0.8964 Val HD95=9.1562
+[2025-12-28 15:28:37] [Epoch 41/50] Val mIoU: 0.8230 Val Dice: 0.8950 Val HD95: 10.3716 Val Acc: 0.9640 | Train Loss: 0.078808 | Time: 20.28s ETA: 0:03:17
+[2025-12-28 15:28:58] [Epoch 42/50] Val mIoU: 0.8240 Val Dice: 0.8957 Val HD95: 9.8844 Val Acc: 0.9643 | Train Loss: 0.077382 | Time: 20.29s ETA: 0:02:54
+[2025-12-28 15:29:18] [Epoch 43/50] Val mIoU: 0.8231 Val Dice: 0.8950 Val HD95: 9.1175 Val Acc: 0.9639 | Train Loss: 0.077457 | Time: 20.30s ETA: 0:02:32
+[2025-12-28 15:29:38] [Epoch 44/50] Val mIoU: 0.8229 Val Dice: 0.8950 Val HD95: 10.3079 Val Acc: 0.9642 | Train Loss: 0.077050 | Time: 20.30s ETA: 0:02:10
+[2025-12-28 15:29:59] [Epoch 45/50] Val mIoU: 0.8228 Val Dice: 0.8948 Val HD95: 10.3662 Val Acc: 0.9640 | Train Loss: 0.077023 | Time: 20.28s ETA: 0:01:48
+[2025-12-28 15:30:19] [Epoch 46/50] Val mIoU: 0.8220 Val Dice: 0.8944 Val HD95: 10.2435 Val Acc: 0.9644 | Train Loss: 0.076755 | Time: 20.28s ETA: 0:01:26
+[2025-12-28 15:30:39] [Epoch 47/50] Val mIoU: 0.8242 Val Dice: 0.8957 Val HD95: 9.9226 Val Acc: 0.9642 | Train Loss: 0.076339 | Time: 20.28s ETA: 0:01:05
+[2025-12-28 15:30:59] [Epoch 48/50] Val mIoU: 0.8241 Val Dice: 0.8959 Val HD95: 9.9139 Val Acc: 0.9643 | Train Loss: 0.076461 | Time: 20.29s ETA: 0:00:43
+[2025-12-28 15:31:20] [Epoch 49/50] Val mIoU: 0.8243 Val Dice: 0.8958 Val HD95: 9.6611 Val Acc: 0.9641 | Train Loss: 0.076973 | Time: 20.25s ETA: 0:00:21
+[2025-12-28 15:31:40] [Epoch 50/50] Val mIoU: 0.8232 Val Dice: 0.8952 Val HD95: 10.0451 Val Acc: 0.9644 | Train Loss: 0.075957 | Time: 20.24s ETA: 0:00:00
+[2025-12-28 15:31:40] 
+======================================================================
+[2025-12-28 15:31:40] 训练完成！
+[2025-12-28 15:31:40] 
+加载最佳模型: ../save_model_unetplusplus\checkpoints\run_best.pth
+[2025-12-28 15:31:40] 最佳模型来自 Epoch 40, Val mIoU: 0.8249
+[2025-12-28 15:31:40] 
+======================================================================
+[2025-12-28 15:31:40] 测试集评估 (使用最佳模型)
+[2025-12-28 15:31:42] 
+测试集结果:
+[2025-12-28 15:31:42]   - Loss: 0.086986
+[2025-12-28 15:31:42]   - Pixel Acc: 0.9642
+[2025-12-28 15:31:42]   - mIoU: 0.8193
+[2025-12-28 15:31:42]   - Dice: 0.8924
+[2025-12-28 15:31:42]   - HD95: 8.4501
+[2025-12-28 15:31:42] 
+模型已保存:
+[2025-12-28 15:31:42]   - 最佳模型: ../save_model_unetplusplus\checkpoints\run_best.pth
+[2025-12-28 15:31:42]   - 最终模型: ../save_model_unetplusplus\unetpp_final.pth

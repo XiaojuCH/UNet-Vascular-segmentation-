@@ -1,0 +1,143 @@
+diff --git a/TransUNET/networks/vit_seg_modeling.py b/TransUNET/networks/vit_seg_modeling.py
+index 086f037..f7d8128 100644
+--- a/TransUNET/networks/vit_seg_modeling.py
++++ b/TransUNET/networks/vit_seg_modeling.py
+@@ -51,6 +51,70 @@ def swish(x):
+ ACT2FN = {"gelu": torch.nn.functional.gelu, "relu": torch.nn.functional.relu, "swish": swish}
+ 
+ 
++# ==================== 注意力模块 ====================
++class ECAAttention(nn.Module):
++    """ECA注意力机制 - 高效通道注意力"""
++    def __init__(self, channels, gamma=2, b=1):
++        super(ECAAttention, self).__init__()
++        # 自适应计算卷积核大小
++        t = int(abs((math.log(channels, 2) + b) / gamma))
++        k = t if t % 2 else t + 1
++
++        self.avg_pool = nn.AdaptiveAvgPool2d(1)
++        self.conv = nn.Conv1d(1, 1, kernel_size=k, padding=k//2, bias=False)
++        self.sigmoid = nn.Sigmoid()
++
++    def forward(self, x):
++        # x: (B, C, H, W)
++        b, c, h, w = x.size()
++
++        # 全局平均池化: (B, C, H, W) -> (B, C, 1, 1)
++        y = self.avg_pool(x)
++
++        # 1D卷积: (B, C, 1, 1) -> (B, 1, C) -> (B, 1, C) -> (B, C, 1, 1)
++        y = self.conv(y.squeeze(-1).transpose(-1, -2)).transpose(-1, -2).unsqueeze(-1)
++
++        # 激活
++        y = self.sigmoid(y)
++
++        # 通道加权
++        return x * y.expand_as(x)
++
++
++class SCSAAttention(nn.Module):
++    """SCSA注意力机制 - 空间和通道自注意力"""
++    def __init__(self, channels, reduction=8):
++        super(SCSAAttention, self).__init__()
++
++        # 通道注意力分支
++        self.channel_attention = nn.Sequential(
++            nn.AdaptiveAvgPool2d(1),
++            nn.Conv2d(channels, channels // reduction, 1, bias=False),
++            nn.ReLU(inplace=True),
++            nn.Conv2d(channels // reduction, channels, 1, bias=False),
++            nn.Sigmoid()
++        )
++
++        # 空间注意力分支
++        self.spatial_attention = nn.Sequential(
++            nn.Conv2d(channels, 1, kernel_size=7, padding=3, bias=False),
++            nn.Sigmoid()
++        )
++
++    def forward(self, x):
++        # x: (B, C, H, W)
++
++        # 通道注意力
++        ca = self.channel_attention(x)
++        x_ca = x * ca
++
++        # 空间注意力
++        sa = self.spatial_attention(x_ca)
++        x_sa = x_ca * sa
++
++        return x_sa
++
++
+ class Attention(nn.Module):
+     def __init__(self, config, vis):
+         super(Attention, self).__init__()
+@@ -292,6 +356,7 @@ class DecoderBlock(nn.Module):
+             out_channels,
+             skip_channels=0,
+             use_batchnorm=True,
++            attention_type=None,  # 新增：注意力类型 ('eca', 'scsa', None)
+     ):
+         super().__init__()
+         self.conv1 = Conv2dReLU(
+@@ -310,12 +375,24 @@ class DecoderBlock(nn.Module):
+         )
+         self.up = nn.UpsamplingBilinear2d(scale_factor=2)
+ 
++        # 添加注意力模块
++        self.attention = None
++        if attention_type == 'eca':
++            self.attention = ECAAttention(out_channels)
++        elif attention_type == 'scsa':
++            self.attention = SCSAAttention(out_channels)
++
+     def forward(self, x, skip=None):
+         x = self.up(x)
+         if skip is not None:
+             x = torch.cat([x, skip], dim=1)
+         x = self.conv1(x)
+         x = self.conv2(x)
++
++        # 应用注意力模块
++        if self.attention is not None:
++            x = self.attention(x)
++
+         return x
+ 
+ 
+@@ -328,7 +405,7 @@ class SegmentationHead(nn.Sequential):
+ 
+ 
+ class DecoderCup(nn.Module):
+-    def __init__(self, config):
++    def __init__(self, config, attention_type=None):
+         super().__init__()
+         self.config = config
+         head_channels = 512
+@@ -352,7 +429,8 @@ class DecoderCup(nn.Module):
+             skip_channels=[0,0,0,0]
+ 
+         blocks = [
+-            DecoderBlock(in_ch, out_ch, sk_ch) for in_ch, out_ch, sk_ch in zip(in_channels, out_channels, skip_channels)
++            DecoderBlock(in_ch, out_ch, sk_ch, attention_type=attention_type)
++            for in_ch, out_ch, sk_ch in zip(in_channels, out_channels, skip_channels)
+         ]
+         self.blocks = nn.ModuleList(blocks)
+ 
+@@ -372,13 +450,13 @@ class DecoderCup(nn.Module):
+ 
+ 
+ class VisionTransformer(nn.Module):
+-    def __init__(self, config, img_size=224, num_classes=21843, zero_head=False, vis=False):
++    def __init__(self, config, img_size=224, num_classes=21843, zero_head=False, vis=False, attention_type=None):
+         super(VisionTransformer, self).__init__()
+         self.num_classes = num_classes
+         self.zero_head = zero_head
+         self.classifier = config.classifier
+         self.transformer = Transformer(config, img_size, vis)
+-        self.decoder = DecoderCup(config)
++        self.decoder = DecoderCup(config, attention_type=attention_type)
+         self.segmentation_head = SegmentationHead(
+             in_channels=config['decoder_channels'][-1],
+             out_channels=config['n_classes'],

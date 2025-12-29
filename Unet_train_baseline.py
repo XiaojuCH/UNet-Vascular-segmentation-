@@ -214,6 +214,8 @@ def train():
     val_mious = []
     train_mdices = []
     val_mdices = []
+    val_f1s = []
+    val_hd95s = []
 
     epoch_times = []
     run_best_miou = 0.0
@@ -246,7 +248,7 @@ def train():
 
             # 计算评估指标
             pred = torch.argmax(out, dim=1)
-            pixel_acc, miou, mdice, _, _ = calculate_metrics(pred, mask, num_classes=2)
+            pixel_acc, miou, mdice, f1, hd95, _, _ = calculate_metrics(pred, mask, num_classes=2, compute_hd=False)
             train_acc += pixel_acc
             train_miou += miou
             train_mdice += mdice
@@ -268,6 +270,8 @@ def train():
         val_acc = 0
         val_miou = 0
         val_mdice = 0
+        val_f1 = 0
+        val_hd95 = 0
 
         with torch.no_grad():
             for img, mask in val_loader:
@@ -279,21 +283,27 @@ def train():
                 val_loss += loss.item()
 
                 pred = torch.argmax(out, dim=1)
-                pixel_acc, miou, mdice, _, _ = calculate_metrics(pred, mask, num_classes=2)
+                pixel_acc, miou, mdice, f1, hd95, _, _ = calculate_metrics(pred, mask, num_classes=2, compute_hd=True)
                 val_acc += pixel_acc
                 val_miou += miou
                 val_mdice += mdice
+                val_f1 += f1
+                val_hd95 += hd95
 
         # 计算验证平均值
         avg_val_loss = val_loss / len(val_loader)
         avg_val_acc = val_acc / len(val_loader)
         avg_val_miou = val_miou / len(val_loader)
         avg_val_mdice = val_mdice / len(val_loader)
+        avg_val_f1 = val_f1 / len(val_loader)
+        avg_val_hd95 = val_hd95 / len(val_loader)
 
         val_losses.append(avg_val_loss)
         val_accs.append(avg_val_acc)
         val_mious.append(avg_val_miou)
         val_mdices.append(avg_val_mdice)
+        val_f1s.append(avg_val_f1)
+        val_hd95s.append(avg_val_hd95)
 
         # 计算时间
         epoch_time = time.time() - epoch_start
@@ -308,7 +318,7 @@ def train():
         # 打印训练信息
         print(f"[Epoch {epoch}/{epochs}] "
               f"Val mIoU: {avg_val_miou:.4f} Val Acc: {avg_val_acc:.4f} "
-              f"Val Dice: {avg_val_mdice:.4f} | "
+              f"Val Dice: {avg_val_mdice:.4f} Val F1: {avg_val_f1:.4f} Val HD95: {avg_val_hd95:.2f} | "
               f"Train Loss: {avg_train_loss:.6f} | "
               f"Time: {epoch_time:.2f}s ETA: {eta}")
 
@@ -321,13 +331,16 @@ def train():
                 'val_miou': float(avg_val_miou),
                 'val_acc': float(avg_val_acc),
                 'val_dice': float(avg_val_mdice),
+                'val_f1': float(avg_val_f1),
+                'val_hd95': float(avg_val_hd95),
                 'train_loss': float(avg_train_loss),
                 'augmentation': 'baseline'  # 标记为基线版本
             }
             save_checkpoint(model, epoch, avg_val_miou, ckpt_dir, 'run_best',
                           optimizer=optimizer, meta=meta)
             print(f">>> New run-best at epoch {epoch}, Val mIoU={avg_val_miou:.4f} "
-                  f"Val Acc={avg_val_acc:.4f} Val Dice={avg_val_mdice:.4f}")
+                  f"Val Acc={avg_val_acc:.4f} Val Dice={avg_val_mdice:.4f} "
+                  f"Val F1={avg_val_f1:.4f} Val HD95={avg_val_hd95:.2f}")
 
         # ================== Early Stopping ==================
         early_stop(avg_val_miou, epoch)
@@ -372,7 +385,7 @@ def train():
     print("===== 测试集评估 (使用最佳模型) =====")
     print("="*70)
 
-    test_loss, test_acc, test_miou, test_mdice = test_model(
+    test_loss, test_acc, test_miou, test_mdice, test_f1, test_hd95 = test_model(
         model, test_loader, device, loss_fn
     )
 
@@ -381,6 +394,8 @@ def train():
     print(f"  - Pixel Acc: {test_acc:.4f}")
     print(f"  - mIoU: {test_miou:.4f}")
     print(f"  - Dice: {test_mdice:.4f}")
+    print(f"  - F1 Score: {test_f1:.4f}")
+    print(f"  - HD95: {test_hd95:.2f}")
 
     # 打印最终总结
     print_training_summary(
