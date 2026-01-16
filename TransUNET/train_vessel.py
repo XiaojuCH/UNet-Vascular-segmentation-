@@ -171,7 +171,7 @@ def get_args():
                         help='掩码文件夹路径')
     
     # 路径保存参数 (默认值只是个占位，建议运行时通过命令行指定)
-    parser.add_argument('--save_dir', type=str, default='../save_model_Transunet_SCSA',
+    parser.add_argument('--save_dir', type=str, default='../save_model_Transunet_EMA',
                         help='模型保存路径')
     
     # [关键参数] 选择模型架构

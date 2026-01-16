@@ -51,6 +51,98 @@ def swish(x):
 ACT2FN = {"gelu": torch.nn.functional.gelu, "relu": torch.nn.functional.relu, "swish": swish}
 
 
+# ==================== CA注意力模块 ====================
+class CoordinateAttention(nn.Module):
+    """
+    Coordinate Attention (CA) - 坐标注意力
+    论文: Coordinate Attention for Efficient Mobile Network Design
+    """
+    def __init__(self, channels, reduction=8):
+        super(CoordinateAttention, self).__init__()
+
+        # X方向和Y方向的全局平均池化
+        self.pool_h = nn.AdaptiveAvgPool2d((None, 1))
+        self.pool_w = nn.AdaptiveAvgPool2d((1, None))
+
+        # 共享的1x1卷积降维
+        mip = max(8, channels // reduction)
+        self.conv1 = nn.Conv2d(channels, mip, kernel_size=1, stride=1, padding=0)
+        self.bn1 = nn.BatchNorm2d(mip)
+        self.act = nn.ReLU(inplace=True)
+
+        # 分别对X和Y方向生成注意力权重
+        self.conv_h = nn.Conv2d(mip, channels, kernel_size=1, stride=1, padding=0)
+        self.conv_w = nn.Conv2d(mip, channels, kernel_size=1, stride=1, padding=0)
+
+    def forward(self, x):
+        # x: (B, C, H, W)
+        identity = x
+
+        n, c, h, w = x.size()
+
+        # X方向池化: (B, C, H, W) -> (B, C, H, 1)
+        x_h = self.pool_h(x)
+        # Y方向池化: (B, C, H, W) -> (B, C, 1, W)
+        x_w = self.pool_w(x).permute(0, 1, 3, 2)
+
+        # 拼接: (B, C, H, 1) + (B, C, W, 1) -> (B, C, H+W, 1)
+        y = torch.cat([x_h, x_w], dim=2)
+
+        # 共享卷积降维
+        y = self.conv1(y)
+        y = self.bn1(y)
+        y = self.act(y)
+
+        # 分离H和W方向
+        x_h, x_w = torch.split(y, [h, w], dim=2)
+        x_w = x_w.permute(0, 1, 3, 2)
+
+        # 生成注意力权重
+        a_h = self.conv_h(x_h).sigmoid()
+        a_w = self.conv_w(x_w).sigmoid()
+
+        # 应用注意力
+        out = identity * a_h * a_w
+
+        return out
+
+
+# ==================== EMA注意力模块 (ICCV 2023) ====================
+class EMA(nn.Module):
+    """
+    Efficient Multi-Scale Attention (EMA)
+    论文: Efficient Multi-Scale Attention Module with Cross-Spatial Learning (ICCV 2023)
+    官方仓库: https://github.com/YOLOonMe/EMA-attention-module
+    """
+    def __init__(self, channels, factor=8):
+        super(EMA, self).__init__()
+        self.groups = factor
+        assert channels // self.groups > 0
+        self.softmax = nn.Softmax(-1)
+        self.agp = nn.AdaptiveAvgPool2d((1, 1))
+        self.pool_h = nn.AdaptiveAvgPool2d((None, 1))
+        self.pool_w = nn.AdaptiveAvgPool2d((1, None))
+        self.gn = nn.GroupNorm(channels // self.groups, channels // self.groups)
+        self.conv1x1 = nn.Conv2d(channels // self.groups, channels // self.groups, kernel_size=1, stride=1, padding=0)
+        self.conv3x3 = nn.Conv2d(channels // self.groups, channels // self.groups, kernel_size=3, stride=1, padding=1)
+
+    def forward(self, x):
+        b, c, h, w = x.size()
+        group_x = x.reshape(b * self.groups, -1, h, w)
+        x_h = self.pool_h(group_x)
+        x_w = self.pool_w(group_x).permute(0, 1, 3, 2)
+        hw = self.conv1x1(torch.cat([x_h, x_w], dim=2))
+        x_h, x_w = torch.split(hw, [h, w], dim=2)
+        x1 = self.gn(group_x * x_h.sigmoid() * x_w.permute(0, 1, 3, 2).sigmoid())
+        x2 = self.conv3x3(group_x)
+        x11 = self.softmax(self.agp(x1).reshape(b * self.groups, -1, 1).permute(0, 2, 1))
+        x12 = x2.reshape(b * self.groups, c // self.groups, -1)
+        x21 = self.softmax(self.agp(x2).reshape(b * self.groups, -1, 1).permute(0, 2, 1))
+        x22 = x1.reshape(b * self.groups, c // self.groups, -1)
+        weights = (torch.matmul(x11, x12) + torch.matmul(x21, x22)).reshape(b * self.groups, 1, h, w)
+        return (group_x * weights.sigmoid()).reshape(b, c, h, w)
+
+
 class Attention(nn.Module):
     def __init__(self, config, vis):
         super(Attention, self).__init__()
@@ -308,9 +400,9 @@ class DecoderBlock(nn.Module):
             use_batchnorm=use_batchnorm,
         )
         self.up = nn.Upsample(scale_factor=2, mode="bilinear", align_corners=True)
-        
-        # [新增] 初始化 SCSA 模块
-        self.scsa = SCSEModule(out_channels)
+
+        # [移除SCSA] 现在只使用Encoder中的CA注意力
+        # self.scsa = SCSEModule(out_channels)
 
     def forward(self, x, skip=None):
         x = self.up(x)
@@ -318,10 +410,10 @@ class DecoderBlock(nn.Module):
             x = torch.cat([x, skip], dim=1)
         x = self.conv1(x)
         x = self.conv2(x)
-        
-        # [新增] 应用 SCSA 注意力
-        x = self.scsa(x)
-        
+
+        # [移除SCSA] 不再在Decoder中使用注意力
+        # x = self.scsa(x)
+
         return x
 
 class SegmentationHead(nn.Sequential):
@@ -361,6 +453,14 @@ class DecoderCup(nn.Module):
         ]
         self.blocks = nn.ModuleList(blocks)
 
+        # [新增] 为每个跳跃连接添加EMA注意力模块
+        self.skip_attentions = nn.ModuleList()
+        for sk_ch in skip_channels:
+            if sk_ch > 0:  # 只为有效的skip connection添加注意力
+                self.skip_attentions.append(EMA(sk_ch, factor=8))
+            else:
+                self.skip_attentions.append(None)
+
     def forward(self, hidden_states, features=None):
         B, n_patch, hidden = hidden_states.size()  # reshape from (B, n_patch, hidden) to (B, h, w, hidden)
         h, w = int(np.sqrt(n_patch)), int(np.sqrt(n_patch))
@@ -370,6 +470,9 @@ class DecoderCup(nn.Module):
         for i, decoder_block in enumerate(self.blocks):
             if features is not None:
                 skip = features[i] if (i < self.config.n_skip) else None
+                # [新增] 在跳跃连接上应用EMA注意力
+                if skip is not None and self.skip_attentions[i] is not None:
+                    skip = self.skip_attentions[i](skip)
             else:
                 skip = None
             x = decoder_block(x, skip=skip)

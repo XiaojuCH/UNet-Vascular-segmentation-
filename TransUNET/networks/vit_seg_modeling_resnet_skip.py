@@ -39,6 +39,101 @@ def conv1x1(cin, cout, stride=1, bias=False):
                      padding=0, bias=bias)
 
 
+# ==================== CA注意力模块 ====================
+class CoordinateAttention(nn.Module):
+    """
+    Coordinate Attention (CA) - 坐标注意力
+    论文: Coordinate Attention for Efficient Mobile Network Design
+    """
+    def __init__(self, channels, reduction=8):
+        super(CoordinateAttention, self).__init__()
+
+        # X方向和Y方向的全局平均池化
+        self.pool_h = nn.AdaptiveAvgPool2d((None, 1))
+        self.pool_w = nn.AdaptiveAvgPool2d((1, None))
+
+        # 共享的1x1卷积降维
+        mip = max(8, channels // reduction)
+        self.conv1 = nn.Conv2d(channels, mip, kernel_size=1, stride=1, padding=0)
+        self.bn1 = nn.BatchNorm2d(mip)
+        self.act = nn.ReLU(inplace=True)
+
+        # 分别对X和Y方向生成注意力权重
+        self.conv_h = nn.Conv2d(mip, channels, kernel_size=1, stride=1, padding=0)
+        self.conv_w = nn.Conv2d(mip, channels, kernel_size=1, stride=1, padding=0)
+
+    def forward(self, x):
+        # x: (B, C, H, W)
+        identity = x
+        n, c, h, w = x.size()
+
+        # X方向池化: (B, C, H, W) -> (B, C, H, 1)
+        x_h = self.pool_h(x)
+        # Y方向池化: (B, C, H, W) -> (B, C, 1, W)
+        x_w = self.pool_w(x).permute(0, 1, 3, 2)
+
+        # 拼接: (B, C, H, 1) + (B, C, W, 1) -> (B, C, H+W, 1)
+        y = torch.cat([x_h, x_w], dim=2)
+
+        # 共享卷积降维
+        y = self.conv1(y)
+        y = self.bn1(y)
+        y = self.act(y)
+
+        # 分离H和W方向
+        x_h, x_w = torch.split(y, [h, w], dim=2)
+        x_w = x_w.permute(0, 1, 3, 2)
+
+        # 生成注意力权重
+        a_h = self.conv_h(x_h).sigmoid()
+        a_w = self.conv_w(x_w).sigmoid()
+
+        # 应用注意力
+        out = identity * a_h * a_w
+        return out
+
+
+# ==================== EMA注意力模块 (ICCV 2023) ====================
+class EMA(nn.Module):
+    """
+    Efficient Multi-Scale Attention (EMA)
+    论文: Efficient Multi-Scale Attention Module with Cross-Spatial Learning (ICCV 2023)
+    官方仓库: https://github.com/YOLOonMe/EMA-attention-module
+
+    特点:
+    - 多尺度特征提取 (适合不同尺度的血管)
+    - 跨空间学习 (捕捉长距离依赖)
+    - 分组机制 (减少计算量)
+    """
+    def __init__(self, channels, factor=8):
+        super(EMA, self).__init__()
+        self.groups = factor
+        assert channels // self.groups > 0
+        self.softmax = nn.Softmax(-1)
+        self.agp = nn.AdaptiveAvgPool2d((1, 1))
+        self.pool_h = nn.AdaptiveAvgPool2d((None, 1))
+        self.pool_w = nn.AdaptiveAvgPool2d((1, None))
+        self.gn = nn.GroupNorm(channels // self.groups, channels // self.groups)
+        self.conv1x1 = nn.Conv2d(channels // self.groups, channels // self.groups, kernel_size=1, stride=1, padding=0)
+        self.conv3x3 = nn.Conv2d(channels // self.groups, channels // self.groups, kernel_size=3, stride=1, padding=1)
+
+    def forward(self, x):
+        b, c, h, w = x.size()
+        group_x = x.reshape(b * self.groups, -1, h, w)  # b*g, c//g, h, w
+        x_h = self.pool_h(group_x)
+        x_w = self.pool_w(group_x).permute(0, 1, 3, 2)
+        hw = self.conv1x1(torch.cat([x_h, x_w], dim=2))
+        x_h, x_w = torch.split(hw, [h, w], dim=2)
+        x1 = self.gn(group_x * x_h.sigmoid() * x_w.permute(0, 1, 3, 2).sigmoid())
+        x2 = self.conv3x3(group_x)
+        x11 = self.softmax(self.agp(x1).reshape(b * self.groups, -1, 1).permute(0, 2, 1))
+        x12 = x2.reshape(b * self.groups, c // self.groups, -1)  # b*g, c//g, hw
+        x21 = self.softmax(self.agp(x2).reshape(b * self.groups, -1, 1).permute(0, 2, 1))
+        x22 = x1.reshape(b * self.groups, c // self.groups, -1)  # b*g, c//g, hw
+        weights = (torch.matmul(x11, x12) + torch.matmul(x21, x22)).reshape(b * self.groups, 1, h, w)
+        return (group_x * weights.sigmoid()).reshape(b, c, h, w)
+
+
 class PreActBottleneck(nn.Module):
     """Pre-activation (v2) bottleneck block.
     """
@@ -61,6 +156,14 @@ class PreActBottleneck(nn.Module):
             self.downsample = conv1x1(cin, cout, stride, bias=False)
             self.gn_proj = nn.GroupNorm(cout, cout)
 
+        # ==================== 注意力模块选择 ====================
+        # 方式1: CA注意力 (Coordinate Attention)
+        # self.attention = CoordinateAttention(cout, reduction=8)
+
+        # 方式2: EMA注意力 (Efficient Multi-Scale Attention) - ICCV 2023
+        self.attention = EMA(cout, factor=8)
+        # ====================================================
+
     def forward(self, x):
 
         # Residual branch
@@ -75,6 +178,11 @@ class PreActBottleneck(nn.Module):
         y = self.gn3(self.conv3(y))
 
         y = self.relu(residual + y)
+
+        # [新增] 应用注意力模块
+        # 结构: Input -> Conv -> BN -> ReLU -> [Attention] -> Output
+        y = self.attention(y)
+
         return y
 
     def load_from(self, weights, n_block, n_unit):
